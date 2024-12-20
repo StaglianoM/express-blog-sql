@@ -1,13 +1,35 @@
 const posts = require("../data/posts.js");
+const db = require("../data/db.js");
+
+
 let lastIndex = posts.at(-1).id
 
 
-// Index
-function index(req, res) {
-    console.log('Lista dei post');
-    const publishedPosts = posts.filter(post => post.published);
-    res.json(publishedPosts);
+//database
+
+// index database
+
+
+function index(_, res) {
+
+    console.log("l'elenco dei post")
+
+    const callback = (err, results) => {
+        if (err) {
+            res.status(500).json({ error: 'Database query failed' })
+        } else {
+            res.json(results)
+        }
+    }
+
+    const sql = `SELECT * FROM posts`
+    db.query(sql, callback)
+
+    console.log('Lista dei post nel db');
 }
+
+
+
 
 // Show
 function show(req, res) {
