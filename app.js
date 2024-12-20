@@ -1,6 +1,9 @@
 const express = require('express');
 const postsRouter = require("./routers/routerPost");
 const cors = require('cors');
+
+const db = require('./data/db');
+
 // const checkTime = require("./middlewares/checkTime");
 const errorHandler = require("./middlewares/errorHandler");
 const notFound = require('./middlewares/notFound');
