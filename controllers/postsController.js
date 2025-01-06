@@ -11,22 +11,48 @@ let lastIndex = posts.at(-1).id
 
 
 function index(_, res) {
+    console.log('Esecuzione della query per l\'elenco dei post.');
 
-    console.log("l'elenco dei post")
+    const sql = `SELECT * FROM posts`;
 
-    const callback = (err, results) => {
+    db.query(sql, (err, results) => {
         if (err) {
-            res.status(500).json({ error: 'Database query failed' })
-        } else {
-            res.json(results)
+            console.error('Errore nella query al database:', err.message);
+            return res.status(500).json({ error: 'Errore durante il recupero dei post.' });
         }
-    }
 
-    const sql = `SELECT * FROM posts`
-    db.query(sql, callback)
-
-    console.log('Lista dei post nel db');
+        console.log('Lista dei post recuperata con successo.');
+        res.json({
+            message: 'Lista dei post recuperata con successo.',
+            data: results
+        });
+    });
 }
+
+
+function destroy(req, res) {
+    const id = parseInt(req.params.id);
+
+    const sql = `DELETE FROM posts WHERE id = ?`;
+
+    db.query(sql, [id], (err, results) => {
+        if (err) {
+            console.error('Errore nella query:', err.message);
+            return res.status(500).json({ error: 'Errore durante l\'eliminazione del post.' });
+        }
+
+        if (results.affectedRows === 0) {
+            return res.status(404).json({
+                error: 'Post non trovato',
+                message: 'Il post con l\'ID specificato non esiste.',
+            });
+        }
+
+        res.status(204).send();
+    });
+}
+
+
 
 
 
